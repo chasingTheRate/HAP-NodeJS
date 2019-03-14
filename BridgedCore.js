@@ -1,3 +1,4 @@
+require('dotenv').config();
 var fs = require('fs');
 var path = require('path');
 var storage = require('node-persist');
@@ -12,7 +13,7 @@ console.log("HAP-NodeJS starting...");
 storage.initSync();
 
 // Start by creating our Bridge which will host all loaded Accessories
-var bridge = new Bridge('Node Bridge', uuid.generate("Node Bridge"));
+var bridge = new Bridge('TigerHome Bridge', uuid.generate("Node Bridge"));
 
 // Listen for bridge identification event
 bridge.on('identify', function(paired, callback) {
@@ -31,7 +32,7 @@ accessories.forEach(function(accessory) {
 
 // Publish the Bridge on the local network.
 bridge.publish({
-  username: "CC:22:3D:E3:CE:F6",
+  username: "CC:22:3D:E3:CE:E2",
   port: 51826,
   pincode: "031-45-154",
   category: Accessory.Categories.BRIDGE

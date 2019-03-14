@@ -3,7 +3,6 @@ var Service = require('../').Service;
 var Characteristic = require('../').Characteristic;
 var uuid = require('../').uuid;
 const blindsController = require('../controllers/blindsController');
-const blindStatusTypes = require('../models/blindStatusTypes');
 
 const BLIND_ID = 'd09f7c3e-cb0e-471e-a276-9e2d3504bfec';
 const BLIND_NAME = 'Living Room One';

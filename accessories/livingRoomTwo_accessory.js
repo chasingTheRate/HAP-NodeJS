@@ -2,7 +2,7 @@ const axios = require('axios');
 var Accessory = require('../').Accessory;
 var Service = require('../').Service;
 var Characteristic = require('../').Characteristic;
-var uuid = require('../').uuid;
+const blindsController = require('../controllers/blindsController');
 
 const BLIND_ID = '6fdfd0a6-4251-4554-894c-403c26201876';
 const BLIND_NAME = 'Living Room Two';
@@ -10,10 +10,54 @@ const MANUFACTURER_NAME = 'TigerHome';
 const MODEL_NAME = 'A';
 const SERIAL_NUMBER = 1
 
+//  ^^ UPDATE VALUES ^^
+// **********************************************************************************************************
+
 var blindUuid = BLIND_ID;
 var blindAccessory = exports.accessory = new Accessory(BLIND_NAME, blindUuid);
 
-const tigerHomeBlindsEndpoint = process.env.BASE_URL;
+async function openBlind(callback) {
+  await blindsController.openBlind(BLIND_ID)
+  callback()
+  setCurrentPosition(100);
+}
+
+async function closeBlind(callback) {
+  await blindsController.closeBlind(BLIND_ID)
+  callback()
+  setCurrentPosition(0);
+}
+
+async function getCurrentPosition() {
+  const response = await blindsController.getCurrentPositionById(BLIND_ID)
+  return response.data[0].currentPosition;
+}
+
+function setCurrentPosition(value) {
+  blindAccessory
+  .getService(Service.WindowCovering)
+  .setCharacteristic(Characteristic.CurrentPosition, value);
+}
+
+async function getCurrentPosition(callback) {
+  const response = await blindsController.getCurrentPositionById(BLIND_ID)
+  callback(null, response.data[0].currentPosition);
+}
+
+function setTargetPosition(value, callback) {
+  try {
+    if (value === 0) {
+      closeBlind(callback);
+    } else if (value === 100) {
+      openBlind(callback);
+    } else {
+      setCurrentPosition(value)
+      callback();
+    }
+  } catch (err) {
+    callback(err);
+  }
+}
 
 blindAccessory
   .getService(Service.AccessoryInformation)
@@ -28,40 +72,15 @@ blindAccessory
 
 blindAccessory
   .addService(Service.WindowCovering, BLIND_NAME)
-  .setCharacteristic(Characteristic.PositionState, Characteristic.PositionState.CLOSED)
+  .setCharacteristic(Characteristic.PositionState, Characteristic.PositionState.STOPPED)
+  
+blindAccessory
+  .getService(Service.WindowCovering)
   .getCharacteristic(Characteristic.TargetPosition)
-  .on('set', (value, callback) => {
-
-    console.log(`Setting Blind Position: ${ value }`);
-
-    var url = '';
-
-    if (value === 0) {
-      url = `/${BLIND_ID}/closeBlind`;
-    } else if (value === 100) {
-      url = `/${BLIND_ID}/openBlind`;
-    }
-
-    console.log(tigerHomeBlindsEndpoint + url);
-    if (url !== '') {
-      axios.post(tigerHomeBlindsEndpoint + url)
-      .then(() => {
-        callback();
-        blindAccessory
-        .getService(Service.WindowCovering)
-        .setCharacteristic(Characteristic.CurrentPosition, value);
-      })
-      .catch((err) => {
-        console.log('error with post');
-        callback(err);
-      })
-    }
-});
+  .on('set', setTargetPosition)
+  .on('get', getCurrentPosition)
 
 blindAccessory
   .getService(Service.WindowCovering)
   .getCharacteristic(Characteristic.CurrentPosition)
-  .on('get', (callback) => {
-    var err = null;
-    callback(err, Characteristic.PositionState.CLOSED);
-  });
+  .on('get', getCurrentPosition)

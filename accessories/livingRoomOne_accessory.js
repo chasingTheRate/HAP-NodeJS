@@ -6,10 +6,12 @@ const blindsController = require('../controllers/blindsController');
 
 const BLIND_ID = 'd09f7c3e-cb0e-471e-a276-9e2d3504bfec';
 const BLIND_NAME = 'Living Room One';
-
 const MANUFACTURER_NAME = 'TigerHome';
 const MODEL_NAME = 'A';
 const SERIAL_NUMBER = 1
+
+//  ^^ UPDATE VALUES ^^
+// **********************************************************************************************************
 
 var blindUuid = BLIND_ID;
 var blindAccessory = exports.accessory = new Accessory(BLIND_NAME, blindUuid);
@@ -26,26 +28,9 @@ async function closeBlind(callback) {
   setCurrentPosition(0);
 }
 
-function getPositionState(blindStatus) {
-  var positionState;
-  switch (blindStatus) {
-    case blindStatusTypes.open:
-      positionState = Characteristic.PositionState.OPENED;
-      break;
-    case blindStatusTypes.closed:
-      positionState = Characteristic.PositionState.CLOSED
-      break;
-    default:
-      positionState = Characteristic.PositionState.UNKNOWN
-     break;
-  }
-  return positionState
-}
-
-async function getStatus() {
-  const response = await blindsController.getBlindStatusById(BLIND_ID)
-  const blindStatus = response.data[0].blindState;
-  return getPositionState(blindStatus);
+async function getCurrentPosition() {
+  const response = await blindsController.getCurrentPositionById(BLIND_ID)
+  return response.data[0].currentPosition;
 }
 
 function setCurrentPosition(value) {
@@ -54,8 +39,9 @@ function setCurrentPosition(value) {
   .setCharacteristic(Characteristic.CurrentPosition, value);
 }
 
-function getCurrentPosition(callback) {
-  callback(null, 75);
+async function getCurrentPosition(callback) {
+  const response = await blindsController.getCurrentPositionById(BLIND_ID)
+  callback(null, response.data[0].currentPosition);
 }
 
 function setTargetPosition(value, callback) {

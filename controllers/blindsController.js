@@ -14,12 +14,12 @@ const closeBlind = (id) => {
   return axios.post(url)
 }
 
-const getBlindStatusById = (id) => {
-  return axios.get(`${baseUrl}/status?id=${id}`);
+const getCurrentPositionById = (id) => {
+  return axios.get(`${baseUrl}/currentPosition?id=${id}`);
 }
 
 module.exports = {
     openBlind,
     closeBlind,
-    getBlindStatusById
+    getCurrentPositionById
 }

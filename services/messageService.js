@@ -28,7 +28,7 @@ amqp.connect('amqp://localhost', (err, conn) => {
       if (err2) {
         throw err2;
       }
-      console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", queue.queue);
+      console.log(` [*] Waiting for messages in the ${TIGER_EXCHANGE}. To exit press CTRL+C`);
       chan.bindQueue(queue.queue, TIGER_EXCHANGE, '');
 
       chan.consume(queue.queue, (msg) => {

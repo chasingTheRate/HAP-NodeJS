@@ -11,7 +11,7 @@ class ContactSensorController extends EventEmitter {
     this.id = id;
     this.state = this.getState();
 
-    this.didChangeStatus = this.didChangeStatus.bind(this);
+    this.handleMessage = this.handleMessage.bind(this);
 
     MessageService.on(CONTACT_SENSOR_DID_CHANGE_STATUS, this.handleMessage)
   }
@@ -21,10 +21,8 @@ class ContactSensorController extends EventEmitter {
   }
 
   didChangeStatus(status) {
-    if (!err) {
-      this.state = status.state;
-      this.emit(CONTACT_SENSOR_DID_CHANGE_STATUS, null, status.state);
-    }
+    this.state = status.state;
+    this.emit(CONTACT_SENSOR_DID_CHANGE_STATUS, null, status.state);
   }
 
   handleMessage(err, msg) {

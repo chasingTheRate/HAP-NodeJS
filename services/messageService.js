@@ -5,7 +5,7 @@ const { TIGER_EXCHANGE } = require('../messages/exchanges');
 
 const messageEvents = new EventEmitter();
 
-amqp.connect('amqp://localhost', (err, conn) => {
+amqp.connect('amqp://127.0.0.1', (err, conn) => {
   
   if (err) {
     throw err;
@@ -28,11 +28,13 @@ amqp.connect('amqp://localhost', (err, conn) => {
       if (err2) {
         throw err2;
       }
+
       console.log(` [*] Waiting for messages in the ${TIGER_EXCHANGE}. To exit press CTRL+C`);
       chan.bindQueue(queue.queue, TIGER_EXCHANGE, '');
 
       chan.consume(queue.queue, (msg) => {
         if (msg.content) {
+            console.log(`msg: ${msg.content.toString()}`);
             messageEvents.emit(CONTACT_SENSOR_DID_CHANGE_STATUS, null, msg.content.toString());
           }
       }, {

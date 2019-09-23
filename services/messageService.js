@@ -2,10 +2,11 @@ const amqp = require('amqplib/callback_api');
 const EventEmitter = require('events');
 const { CONTACT_SENSOR_DID_CHANGE_STATUS } = require('../messages/messageEventTypes');
 const { TIGER_EXCHANGE } = require('../messages/exchanges');
+const config = require('../config');
 
 const messageEvents = new EventEmitter();
 
-amqp.connect('amqp://127.0.0.1', (err, conn) => {
+amqp.connect(config.rabbitMqUrl, (err, conn) => {
   
   if (err) {
     throw err;

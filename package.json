@@ -8,6 +8,7 @@
     "node": ">=4.3.2"
   },
   "dependencies": {
+    "amqplib": "^0.5.5",
     "axios": "^0.18.0",
     "bonjour-hap": "^3.5.1",
     "buffer-shims": "^1.0.0",

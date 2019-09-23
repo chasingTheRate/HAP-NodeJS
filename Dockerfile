@@ -1,5 +1,5 @@
 
-FROM node:latest
+FROM node:10.16.3
 
 # Create app directory
 WORKDIR /usr/src/app
@@ -16,4 +16,4 @@ RUN npm install
 # Bundle app source
 COPY . .
 
-CMD [ "npm", "start"]
+CMD [ "node", "BridgedCore"]

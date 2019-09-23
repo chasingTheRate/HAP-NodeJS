@@ -6,6 +6,7 @@ var uuid = require('./').uuid;
 var Bridge = require('./').Bridge;
 var Accessory = require('./').Accessory;
 var accessoryLoader = require('./lib/AccessoryLoader');
+const config = require('./config');
 
 const date = new Date();
 console.log(`${date}: HAP-NodeJS starting...`);
@@ -33,7 +34,7 @@ accessories.forEach(function(accessory) {
 
 // Publish the Bridge on the local network.
 bridge.publish({
-  username: "CC:22:3D:E3:DD:E5",
+  username: config.username,
   port: 51826,
   pincode: "031-45-154",
   category: Accessory.Categories.BRIDGE

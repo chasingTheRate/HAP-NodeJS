@@ -33,7 +33,7 @@ accessories.forEach(function(accessory) {
 
 // Publish the Bridge on the local network.
 bridge.publish({
-  username: "CC:22:3D:E3:CE:D3", // Prod: E1, Dev: E4 
+  username: "CC:22:3D:E3:DD:E5",
   port: 51826,
   pincode: "031-45-154",
   category: Accessory.Categories.BRIDGE

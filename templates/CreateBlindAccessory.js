@@ -13,20 +13,29 @@ function CreateBlindAccessory(options) {
     modelName,
     serialNumber
   } = options;
-
   
   const accessory = new Accessory(name, blindId);
 
   async function openBlind(callback) {
-    await blindsController.openBlind(blindId)
-    callback()
-    setCurrentPosition(100);
+    try {
+      await blindsController.openBlind(blindId)
+      callback()
+      setCurrentPosition(100);
+    } catch (err) {
+      console.error(`openBlind Error`);
+      callback(err)
+    }
   }
   
   async function closeBlind(callback) {
-    await blindsController.closeBlind(blindId)
-    callback()
-    setCurrentPosition(0);
+    try {
+      await blindsController.closeBlind(blindId)
+      callback()
+      setCurrentPosition(0);
+    } catch (err) {
+      console.error(`closeBlind Error`);
+      callback(err)
+    }
   }
   
   async function getCurrentPosition(callback) {
@@ -34,6 +43,7 @@ function CreateBlindAccessory(options) {
       const response = await blindsController.getCurrentPositionById(blindId)
       callback(null, response.data[0].currentPosition);
     } catch (err) {
+      console.log(`getCurrentPosition Error`);
       callback(err);
     }
   }
@@ -55,6 +65,7 @@ function CreateBlindAccessory(options) {
         callback();
       }
     } catch (err) {
+      console.log(`setTargetPosition: ${err}`);
       callback(err);
     }
   }
